@@ -343,6 +343,23 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/tex,windows
 
+# Created by https://www.toptal.com/developers/gitignore/api/jabref
+# Edit at https://www.toptal.com/developers/gitignore?templates=jabref
+
+### JabRef ###
+# JabRef - https://www.jabref.org/
+*.bak
+*.sav
+
+# End of https://www.toptal.com/developers/gitignore/api/jabref
+
 # my add
 # temporary files
 *.tmp
+
+# billzhou233 add
+# vscode conf
+.vscode
+
+# macOS
+.DS_Store

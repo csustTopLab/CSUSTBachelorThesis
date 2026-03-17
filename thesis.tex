@@ -1,5 +1,5 @@
 \documentclass{csustThesis}
-\addbibresource[location=local]{reference.bib}
+\addbibresource[location=local]{thesis_reference.bib}
 
 \input{baseinfo.tex}
 
@@ -38,10 +38,8 @@
 \nocite{*}  % 列出全部参考文献，无论是否引用
 \printbibliography[heading=none]
 
-\chap{致谢}
-感谢阅读！
+\include{body/thankyou.tex}
 
-\include{body/appendix.tex}
+% \include{body/appendix.tex}  % 附录，如果你要写的话请取消注释并编辑对应的文件
 
 \end{document}
-

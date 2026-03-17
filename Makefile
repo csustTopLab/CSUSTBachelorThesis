@@ -2,13 +2,13 @@
 template_figs := figure/template/*.*
 thesis_figs := figure/thesis/*
 
-common_deps := csustThesis.cls baseinfo.tex reference.bib
+common_deps := csustThesis.cls baseinfo.tex
 template_deps := ${template_figs} ${common_deps}
 body_deps := body/*.tex
 
 # dependencies for each PDF
-thesis_deps := thesis.tex ${template_deps} ${thesis_figs} ${body_deps}
-research_proposal_deps := research_proposal.tex ${template_deps}
+thesis_deps := thesis.tex thesis_reference.bib ${template_deps} ${thesis_figs} ${body_deps}
+research_proposal_deps := research_proposal.tex proposal_reference.bib ${template_deps}
 task_book_deps := task_book.tex ${template_deps}
 translation_deps := translation.tex ${template_deps}
 
@@ -61,9 +61,12 @@ translation.pdf: ${translation_deps}
 
 .PHONY: clean
 clean:
-	@echo "注意！！！以下生成的 PDF 也会被删除："
-	@echo "${output_pdfs}"
 	-@rm -f ${tmp_files}
 	-@cd body && rm -f ${tmp_files}
+
+.PHONY: clean-pdf
+clean-pdf:
+	@echo "注意！！！以下生成的 PDF 会被删除："
+	@echo "${output_pdfs}"
 	-@rm -rf release/
 	-@rm -f ${output_pdfs}

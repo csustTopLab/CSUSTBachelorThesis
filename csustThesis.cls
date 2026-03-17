@@ -7,7 +7,7 @@
 \LoadClass{article}
 \RequirePackage[zihao=-4,heading=true,linespread=1.5]{ctex}
 \RequirePackage[a4paper,top=25mm,bottom=20mm,left=30mm,right=20mm]{geometry}
-\RequirePackage[colorlinks, linkcolor=blue, anchorcolor=yellow, citecolor=red]{hyperref}
+\RequirePackage[hidelinks]{hyperref}
 \usepackage{amssymb, amsfonts, amsmath, amsthm, mathtools, mathrsfs, bm, calc} %% 和数学相关的一些宏包
 \RequirePackage{bookmark}
 \RequirePackage{graphicx}
@@ -35,14 +35,12 @@
 \RequirePackage{titlesec}  % titlespacing
 \RequirePackage[titles]{tocloft}  % 用于设置目录条目
 \RequirePackage{suffix}  % 定义 * 命令
-\RequirePackage{varwidth}  
-\RequirePackage{ulem}  % 删除线  
+\RequirePackage{varwidth}
+\RequirePackage{ulem}  % 删除线
 \RequirePackage{pifont} % 用来显示 ①
 % 控制 ① 得字体大小 见：https://tex.stackexchange.com/a/130236
 \let\oldding\ding% Store old \ding in \oldding
 \renewcommand{\ding}[2][1]{\scalebox{#1}{\oldding{#2}}}% Scale \oldding via optional argument，默认大小1，一般1.3倍较合适。
-
-
 
 
 % Options
@@ -52,7 +50,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 全局设置 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \IfFontExistsTF{宋体}{
     \setCJKmainfont{宋体}[AutoFakeBold={2.17}]  % 中文默认字体
-	\setCJKfamilyfont{SimSun}[AutoFakeBold={2.17}]{宋体}
+    \setCJKfamilyfont{SimSun}[AutoFakeBold={2.17}]{宋体}
     \renewcommand\songti{\CJKfamily{SimSun}}
 }{
     % 非 Windows 平台请手动安装宋体
@@ -175,28 +173,36 @@
 \renewcommand{\thetable}{\thesection-\arabic{table}}  % 表几-几
 % 公式按照一级标题开始编号 (1.x) 表示第一章里面得公式 x
 \renewcommand{\theequation}{\thesection-\arabic{equation}} % 设置公式编号格式
+% 调整公式块上下间距
+\AtBeginDocument{
+    \setlength{\abovedisplayskip}{-2.5ex plus .1ex minus .1ex}
+    \setlength{\belowdisplayskip}{0.5ex plus .1ex minus .1ex}
+    \setlength{\abovedisplayshortskip}{-2ex plus .1ex minus .1ex}
+    \setlength{\belowdisplayshortskip}{1ex plus .1ex minus .1ex}
+}
 % 增大表格间距
-% \renewcommand{\arraystretch}{1.2}
+\setcellgapes{5pt} % 设置多行单元格的间距
+\makegapedcells % 启用设置
 
 % 代码抄录的一系列设置
 \lstset{
-    basicstyle=\footnotesize\ttfamily, 
-    flexiblecolumns, 
-    numbers=left, 
-    numbersep=5pt, 
-    numberstyle=\tiny, 
-    backgroundcolor=\color{white}, 
-    frame=single, 
-    breaklines=true, 
-    showtabs=false, 
-    showspaces=false, 
-    showstringspaces=false, 
-    keywordstyle=\color{teal}, 
-    commentstyle=\color{blue}, 
-    stringstyle=\color{red}, 
-    numberstyle=\color{gray}, 
-    tabsize=8, 
-    breakatwhitespace=false, 
+    basicstyle=\footnotesize\ttfamily,
+    flexiblecolumns,
+    numbers=left,
+    numbersep=5pt,
+    numberstyle=\tiny,
+    backgroundcolor=\color{white},
+    frame=single,
+    breaklines=true,
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+    keywordstyle=\color{teal},
+    commentstyle=\color{blue},
+    stringstyle=\color{red},
+    numberstyle=\color{gray},
+    tabsize=8,
+    breakatwhitespace=false,
     postbreak=\mbox{\textcolor{violet}{$\hookrightarrow$}\space}
 } %% 代码抄录的一系列设置
 
@@ -315,6 +321,26 @@
     \def\csustThesis@taskRangeTime{#1}
 }
 
+% 定义任务书审查时间的命令
+\newcommand{\csustThesis@taskCheckYear}{}
+\newcommand{\csustThesis@taskCheckMonth}{}
+\newcommand{\csustThesis@taskCheckDay}{}
+\newcommand{\taskCheckDate}[3]{
+    \def\csustThesis@taskCheckYear{#1}
+    \def\csustThesis@taskCheckMonth{#2}
+    \def\csustThesis@taskCheckDay{#3}
+}
+
+% 定义任务书批准时间的命令
+\newcommand{\csustThesis@taskApproveYear}{}
+\newcommand{\csustThesis@taskApproveMonth}{}
+\newcommand{\csustThesis@taskApproveDay}{}
+\newcommand{\taskApproveDate}[3]{
+    \def\csustThesis@taskApproveYear{#1}
+    \def\csustThesis@taskApproveMonth{#2}
+    \def\csustThesis@taskApproveDay{#3}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 制作封面的命令 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\makecover{
 \begin{titlepage}
@@ -323,19 +349,19 @@
         \vspace*{1.2\baselineskip}
         \includegraphics{figure/template/csust_logo_and_name.pdf}
     \end{center}
-    
+
     \begin{center}
         \vspace*{2.5\baselineskip}
         \mbox{\bfseries\fontsize{48bp}{2\hsize}\selectfont 毕业设计（论文）}
     \end{center}
-    
+
     \begin{center}
         \vspace*{2cm}
         \begin{spacing}{1.8}
         \bfseries\zihao{-2}
         \settowidth{\maxwidth}{题目：}
         \makebox[\maxwidth][s]{题目：}\underline{\makebox[\titleBoxLen][l]{\phantom{幻影}}}
-    
+
         \hspace*{\maxwidth}\csustThesis@title@secunderline{\makebox[\titleBoxLen][l]{\phantom{幻影}}}
 
         \vspace*{-2\baselineskip}  % 2.78cm
@@ -345,7 +371,7 @@
         \end{minipage}
         \end{spacing}
     \end{center}
-    
+
     \begin{center}
         \vspace*{-0.9cm}
         \begin{spacing}{1.63}
@@ -361,14 +387,14 @@
         \makebox[4em][s]{指导教师}：\underline{\makebox[\len][c]{\csustThesis@supervisorName}}
         \end{spacing}
     \end{center}
-    
+
     \begin{center}
         \vspace*{1cm}
-        \bfseries\zihao{3} 
-        \makebox[4ex][c]{\csustThesis@completeYear} 年 
+        \bfseries\zihao{3}
+        \makebox[5ex][c]{\csustThesis@completeYear} 年
         \makebox[2ex][c]{\csustThesis@completeMonth} 月
     \end{center}
-    
+
 \end{titlepage}
 }
 
@@ -381,22 +407,22 @@
         \begin{center}\heiti\zihao{2}\csustThesis@title\end{center}
     \end{minipage}
     \end{center}
-    
-    
+
+
     \begin{center}
     \begin{spacing}{2.03}
     \bfseries\zihao{3}
         \makebox[4.5em][s]{学生姓名}：\underline{\makebox[\llen][c]{\csustThesis@stuName}}
-    
+
         \makebox[4.5em][s]{学号}：\underline{\makebox[\llen][c]{\csustThesis@stuID}}
-    
+
         \makebox[4.5em][s]{班级}：\underline{\makebox[\llen][c]{\csustThesis@stuClass}}
-    
+
         \makebox[4.5em][s]{所在学院}：\underline{\makebox[\llen][c]{\csustThesis@stuCollege}}
-    
+
         \makebox[4.5em][s]{指导教师}：\underline{\makebox[\llen][c]{\csustThesis@supervisorName}}
-    
-        \makebox[4.5em][s]{完成日期}：\underline{\makebox[\llen][c]{\makebox[4ex][c]{\csustThesis@completeYear} 年 \makebox[2ex][c]{\csustThesis@completeMonth} 月 \makebox[2ex][c]{\csustThesis@completeDay} 日}}
+
+        \makebox[4.5em][s]{完成日期}：\underline{\makebox[\llen][c]{\makebox[5ex][c]{\csustThesis@completeYear} 年 \makebox[2ex][c]{\csustThesis@completeMonth} 月}}
     \end{spacing}
     \end{center}
     \end{titlepage}
@@ -424,13 +450,11 @@
 \vspace*{4.2cm}
 作者签名：\makebox[5cm][l]{\csustThesis@integrityStatement@author}
 日期：
-\makebox[4ex][c]{\csustThesis@integrityStatement@year} 年
+\makebox[5ex][c]{\csustThesis@integrityStatement@year} 年
 \makebox[2ex][c]{\csustThesis@integrityStatement@month} 月
 \makebox[2ex][c]{\csustThesis@integrityStatement@day} 日
 \end{titlepage}
 }
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 制作中英文摘要的环境及命令 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand\keywords[1]{\ \\ {\heiti\zihao{4}#1}}  % 黑体四号
@@ -455,15 +479,15 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 制作目录的命令 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\makecontents}{%
-	\clearpage
+    \clearpage
     \vspace*{-.5\baselineskip}
-	\pdfbookmark[1]{目录}{contents}  % 将目录添加到pdf书签
+    \pdfbookmark[1]{目录}{contents}  % 将目录添加到pdf书签
     \renewcommand\contentsname{\heiti\zihao{3}目\hspace{\ccwd}录}  % 设置目录字样
     \renewcommand\cftsecfont{\heiti}
-    \renewcommand\cftsecleader{\cftdotfill{\cftdotsep}}  % 
+    \renewcommand\cftsecleader{\cftdotfill{\cftdotsep}}  %
     \setlength\cftbeforesecskip{0cm}
-	\tableofcontents
-	\clearpage
+    \tableofcontents
+    \clearpage
 }
 
 
@@ -473,10 +497,10 @@
     \begin{center}
         \vspace*{1.2\baselineskip}
         \includegraphics{figure/template/csust_logo_and_name.pdf}
-    
+
         \vspace*{2.5\baselineskip}
         \mbox{\zihao{-1}\bfseries 毕业设计（论文）资料附件：}
-        
+
         \vspace{2\baselineskip}
         \mbox{\zihao{-0}\bfseries 外文译文及原文}
 
@@ -485,12 +509,12 @@
     \begin{spacing}{1.63}
     \bfseries\zihao{3}
     \settowidth{\maxwidth}{学生姓名}
-				\makebox[\maxwidth][s]{译文出处}：
+                \makebox[\maxwidth][s]{译文出处}：
         \begin{minipage}[t][\baselineskip][t]{\len}
-					\zihao{-4}{\csustThesis@translationRef}
+                    \zihao{-4}{\csustThesis@translationRef}
         \end{minipage}
     \end{spacing}
-    
+
     {\zihao{-2} \phantom{一行}\\ \phantom{两行}\\}
 
 
@@ -511,21 +535,21 @@
     \vspace{3\baselineskip}
 
     {
-        \bfseries\zihao{3} 
-        \makebox[\widthof{\csustThesis@translation@year}][c]{\csustThesis@translation@year} 年 
+        \bfseries\zihao{3}
+        \makebox[\widthof{\csustThesis@translation@year}][c]{\csustThesis@translation@year} 年
         \makebox[\widthof{\csustThesis@translation@month}][c]{\csustThesis@translation@month} 月
     }
 
     \end{center}
-    
+
     \end{titlepage}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 自定义开题报告和任务书的文本框 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newtcolorbox{ubox}[1][]
 {
-	#1,colback=white,arc=0mm,outer arc=0pt,width=1.01\linewidth,boxrule=.7pt,
-	before upper={\parindent24bp},left=1.2pt,right=1.2pt,top=0mm,
+    #1,colback=white,arc=0mm,outer arc=0pt,width=1.01\linewidth,boxrule=.7pt,
+    before upper={\parindent24bp},left=1.2pt,right=1.2pt,top=0mm,
 }
 \tcbuselibrary{breakable}  % 文本框断页
 
@@ -538,18 +562,18 @@
         \includegraphics[width=9.07cm,height=2.447cm]{figure/template/csustname_2640by711.png}
         \vspace*{\baselineskip}
     \end{center}
-    
+
     \begin{center}
         \mbox{\bfseries\zihao{-0} 毕业设计(论文)开题报告}
     \end{center}
-    
+
     \begin{center}
     \vspace*{2cm}
     \begin{spacing}{1.8}
     \bfseries\zihao{-2}
         \settowidth{\maxwidth}{题目：}
         \makebox[\maxwidth][s]{题目：}\underline{\makebox[\titleBoxLen][c]{\phantom{幻影}}}
-    
+
         \hspace*{\maxwidth}\csustThesis@title@secunderline{\makebox[\titleBoxLen][l]{\phantom{幻影}}}
 
         \vspace*{-2\baselineskip}
@@ -557,10 +581,10 @@
         \begin{minipage}[t][2\baselineskip][t]{\titleBoxLen}
             \begin{center}\csustThesis@title\end{center}
         \end{minipage}
-        
+
     \end{spacing}
     \end{center}
-    
+
     \begin{center}
     \vspace*{-0.9cm}
     \begin{spacing}{1.63}
@@ -579,17 +603,16 @@
         \makebox[\maxwidth][s]{指导教师}：\underline{\makebox[\len][c]{\csustThesis@supervisorName}}
     \end{spacing}
     \end{center}
-    
+
     \begin{center}
     \vspace*{1cm}
-    \bfseries\zihao{3} 
-    \makebox[4ex][c]{\csustThesis@researchProposal@year} 年 
+    \bfseries\zihao{3}
+    \makebox[5ex][c]{\csustThesis@researchProposal@year} 年
     \makebox[2ex][c]{\csustThesis@researchProposal@month} 月
     \end{center}
-    
+
     \end{titlepage}
 }
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 制作任务书封面的命令 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -600,7 +623,7 @@
         \vspace*{2\baselineskip}
         \includegraphics[scale=.106]{figure/template/csustname_2640by712.jpg}
     \end{center}
-    
+
     \begin{center}
         \vspace{\baselineskip}
         \mbox{\bfseries\heiti\zihao{1} 毕业设计（论文）任务书}
@@ -609,21 +632,21 @@
     \begin{center}
         \vspace{3.5\baselineskip}
         \zihao{4}
-        \underline{\makebox[4cm][c]{\csustThesis@stuShortCollege}}
+        \underline{\makebox[2.2cm][c]{\csustThesis@stuShortCollege}}
         \makebox{学院}
-        \underline{\makebox[3.5cm][c]{\csustThesis@stuMajor}}
+        \underline{\makebox[5.5cm][c]{\csustThesis@stuMajor}}
         \makebox{专业}
-        \underline{\makebox[2.2cm][c]{\csustThesis@stuShortClass}}
+        \underline{\makebox[2cm][c]{\csustThesis@stuShortClass}}
         \makebox{班}
     \end{center}
-    
+
     \settowidth{\maxwidth}{\zihao{-4}任务起止日期:}
     \begin{center}
         \vspace{1.1\baselineskip}
         \begin{spacing}{1.8}
         \zihao{4}
         \makebox[\maxwidth][l]{题\hspace{1.5em}目}\underline{\makebox[10cm][c]{\phantom{幻影}}}
-    
+
         \hspace*{\maxwidth}\csustThesis@title@secunderline{\makebox[10cm][l]{\phantom{幻影}}}
 
         \vspace*{-2\baselineskip}
@@ -639,7 +662,7 @@
         \zihao{-4}
         \makebox[\maxwidth][l]{任务起止日期：} \underline{\makebox[10cm][c]{\csustThesis@taskRangeTime}}
     \end{center}
-    
+
     \begin{center}
         \vspace{3.2\baselineskip}
         \begin{spacing}{1.85}
@@ -647,17 +670,16 @@
         \makebox[\maxwidth][s]{学生姓名}\underline{\makebox[4.15cm][c]{\csustThesis@stuName}}
         \makebox[5.85cm][r]{\mbox{学\hspace{.5em}号}\underline{\makebox[4.15cm][c]{\csustThesis@stuID}}}
 
-        \makebox[\maxwidth][s]{指导教师}\underline{\makebox[4.15cm][c]{}}
+        \makebox[\maxwidth][s]{指导教师}\underline{\makebox[4.15cm][c]{\csustThesis@supervisorName}}
         \makebox[5.85cm][r]{}
 
         \makebox[\maxwidth][s]{教研室主任}\underline{\makebox[4.15cm][c]{}}
-        \makebox[5.85cm][r]{\makebox[4ex][c]{} 年 \makebox[2ex][c]{} 月 \makebox[2ex][c]{} 日审查}
+        \makebox[5.85cm][r]{\makebox[5ex][c]{\csustThesis@taskCheckYear} 年 \makebox[2ex][c]{\csustThesis@taskCheckMonth} 月 \makebox[2ex][c]{\csustThesis@taskCheckDay} 日审查}
 
         \makebox[\maxwidth][s]{院长}\underline{\makebox[4.15cm][c]{}}
-        \makebox[5.85cm][r]{\makebox[4ex][c]{} 年 \makebox[2ex][c]{} 月 \makebox[2ex][c]{} 日批准}
+        \makebox[5.85cm][r]{\makebox[5ex][c]{\csustThesis@taskApproveYear} 年 \makebox[2ex][c]{\csustThesis@taskApproveMonth} 月 \makebox[2ex][c]{\csustThesis@taskApproveDay} 日批准}
         \end{spacing}
     \end{center}
-    
+
     \end{titlepage}
 }
-
